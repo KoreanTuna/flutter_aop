@@ -3,7 +3,7 @@
 Annotation driven proxies that bring small, framework free AOP style hooks to Flutter and Dart code.  
 Mark methods with `@Aop` and let `build_runner` generate proxy classes that run your logic before, after, or when an error happens.
 
-[한국어 문서 보기](README.ko.md)
+[한국어 문서 보기](https://github.com/KoreanTuna/flutter_aop/blob/main/README.ko.md)
 
 ## Features
 
@@ -22,7 +22,7 @@ dependencies:
     path: ../flutter_aop # or use your hosted location
 
 dev_dependencies:
-  build_runner: ^2.4.12
+  build_runner: ^2.10.4
 ```
 
 Every library that wants AOP support must include the generated part file:
