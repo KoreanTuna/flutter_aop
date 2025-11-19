@@ -1,0 +1,19 @@
+targets:
+  $default:
+    builders:
+      flutter_aop|aop_generator:
+        enabled: true
+
+builders:
+  aop_generator:
+    import: "package:flutter_aop/builder.dart"
+    builder_factories: ["aopBuilder"]
+    build_extensions: {".dart": [".aop.dart", ".aop.bootstrap"]}
+    auto_apply: dependents
+    build_to: source
+  aop_bootstrap:
+    import: "package:flutter_aop/src/generator/bootstrap_builder.dart"
+    builder_factories: ["aopBootstrapBuilder"]
+    build_extensions: {"lib/flutter_aop.dart": ["lib/flutter_aop_bootstrap.g.dart"]}
+    auto_apply: dependents
+    build_to: source

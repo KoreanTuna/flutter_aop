@@ -1,0 +1,25 @@
+name: flutter_aop_example
+description: "Demonstrates how to wrap classes with @Aop and generated proxies."
+publish_to: "none"
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_aop:
+    path: ..
+  get_it: ^7.7.0
+  injectable: ^2.4.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  build_runner: ^2.4.12
+  injectable_generator: ^2.4.2
+
+flutter:
+  uses-material-design: false
