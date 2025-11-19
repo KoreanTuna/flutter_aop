@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'annotation.dart';
 import 'context.dart';
 import 'hooks.dart';
 import 'registry.dart';
