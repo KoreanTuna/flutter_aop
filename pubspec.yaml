@@ -1,6 +1,6 @@
 name: flutter_aop
 description: "Annotation driven proxies to add lightweight AOP style hooks to Flutter code."
-version: 0.0.1+2
+version: 0.0.2+3
 homepage: https://github.com/KoreanTuna
 
 environment:
