@@ -18,7 +18,7 @@ dependencies:
     path: ../flutter_aop # 또는 pub.dev 등록 후 버전 명시
 
 dev_dependencies:
-  build_runner: ^2.4.12
+  build_runner: ^2.10.4
 ```
 
 모든 AOP 대상 파일에 `part '*.aop.dart';`를 추가하세요. 예)
