@@ -1,6 +1,9 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format width=80
 
+// ignore_for_file: type=lint
+// dart format width=80
+
 part of 'logging_aspect.dart';
 
 // **************************************************************************
