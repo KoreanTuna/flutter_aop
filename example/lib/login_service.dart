@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter_aop/flutter_aop.dart';
 
 part 'login_service.aop.dart';
