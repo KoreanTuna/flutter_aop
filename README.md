@@ -138,6 +138,7 @@ Every class with at least one `@Aop` method receives a proxy and registers itsel
 - Hooks for synchronous methods must be synchronous too. If you need async work (e.g. writing to storage), mark the original method `async` so the proxy can await your hook.
 - `positionalArguments` and `namedArguments` inside `AopContext` give you the exact values passed to the method.
 - The optional `description` field is never used by the runtime but is emitted in generated comments—handy when you read the `.aop.dart` file.
+- You can short-circuit the original call by setting `context.skipInvocation = true` and populating `context.result` in a `before` hook (e.g. return a cached value). `OnError` hooks can also recover by clearing `context.error` and setting a replacement `context.result`.
 
 ## Running the generator
 
