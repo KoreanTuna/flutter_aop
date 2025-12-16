@@ -1,3 +1,7 @@
+## 0.0.5+6
+
+- Refactor runner exception handling and example
+
 ## 0.0.4+5
 
 - Refactor runner exception handling and example
