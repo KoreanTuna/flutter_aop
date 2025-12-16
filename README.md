@@ -1,3 +1,8 @@
+[![likes](https://img.shields.io/pub/likes/flutter_aop.svg)](https://pub.dev/packages/flutter_aop)
+[![pub points](https://img.shields.io/pub/points/flutter_aop.svg)](https://pub.dev/packages/flutter_aop)
+[![popularity](https://img.shields.io/pub/popularity/flutter_aop.svg)](https://pub.dev/packages/flutter_aop)
+
+
 # flutter_aop
 
 Annotation driven proxies that bring small, framework free AOP style hooks to Flutter and Dart code.  
