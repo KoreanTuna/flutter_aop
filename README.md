@@ -1,7 +1,4 @@
-[![likes](https://img.shields.io/pub/likes/flutter_aop.svg)](https://pub.dev/packages/flutter_aop)
-[![pub points](https://img.shields.io/pub/points/flutter_aop.svg)](https://pub.dev/packages/flutter_aop)
-[![popularity](https://img.shields.io/pub/popularity/flutter_aop.svg)](https://pub.dev/packages/flutter_aop)
-
+[![pub package](https://img.shields.io/pub/v/flutter_aop.svg)](https://pub.dev/packages/flutter_aop)
 
 # flutter_aop
 
