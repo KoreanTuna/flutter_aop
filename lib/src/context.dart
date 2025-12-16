@@ -40,4 +40,10 @@ class AopContext {
 
   /// True if the wrapped call threw.
   bool get hasError => error != null;
+
+  /// When true, skips invoking the original method.
+  ///
+  /// Before hooks can set this (and optionally [result]) to short-circuit
+  /// execution — useful for cache hits or feature-flagged bypasses.
+  bool skipInvocation = false;
 }

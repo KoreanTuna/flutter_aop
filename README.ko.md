@@ -117,6 +117,12 @@ abstract class ServiceModule {
 
 전체 예시는 `example/lib/di.dart` 파일을 참고하세요.
 
+## 추가 팁
+
+- 동기 메소드에는 동기 훅만 연결할 수 있습니다. 비동기가 필요하면 원본 메소드를 `async`로 변경하세요.
+- `AopContext.positionalArguments` / `namedArguments`로 호출 인자를 그대로 받을 수 있습니다.
+- 캐시 등으로 원본 메소드를 건너뛰고 싶다면 `before` 훅에서 `context.skipInvocation = true`로 설정하고 `context.result`에 반환 값을 채워주세요. `onError` 훅에서 `context.error`를 `null`로 설정하고 `context.result`를 채우면 실패를 복구할 수도 있습니다.
+
 ## build_runner
 
 개발 중에는 watch 모드를 사용하면 편합니다.
