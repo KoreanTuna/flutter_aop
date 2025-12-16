@@ -14,10 +14,4 @@ class LoginService {
     await Future<void>.delayed(const Duration(milliseconds: 300));
     print('[Service] Login successful for $id');
   }
-
-  Future<void> noneAopLogin(String id, String password) async {
-    print('[Service] Starting login for $id');
-    await Future<void>.delayed(const Duration(milliseconds: 300));
-    print('[Service] Login successful for $id');
-  }
 }

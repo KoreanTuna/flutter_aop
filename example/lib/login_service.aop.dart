@@ -40,10 +40,6 @@ class LoginServiceAopProxy implements LoginService {
     );
   }
   // Proxy for: Future<void> login(String id, String password)
-
-  @override
-  Future<void> noneAopLogin(String id, String password) =>
-      _target.noneAopLogin(id, password);
 }
 
 bool _$flutterAopInitialized_lib_login_service_dart = false;

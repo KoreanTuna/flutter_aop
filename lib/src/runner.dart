@@ -43,6 +43,16 @@ void _runSyncHooks(
   }
 }
 
+R _result<R>(AopContext context) => context.result as R;
+
+void _throwIfError(AopContext context) {
+  if (!context.hasError) return;
+  Error.throwWithStackTrace(
+    context.error!,
+    context.stackTrace ?? StackTrace.current,
+  );
+}
+
 Future<R> runAsyncWithAop<R>({
   required AopContext context,
   required FutureOr<R> Function() invoke,
@@ -55,20 +65,39 @@ Future<R> runAsyncWithAop<R>({
     await _runAsyncHooks(hooks, (hook) => hook.before, context);
   }
 
+  if (context.skipInvocation) {
+    if (annotation.after) {
+      await _runAsyncHooks(hooks, (hook) => hook.after, context);
+    }
+    _throwIfError(context);
+    return _result<R>(context);
+  }
+
   try {
     final result = await Future<R>.sync(invoke);
     context.result = result;
     if (annotation.after) {
       await _runAsyncHooks(hooks, (hook) => hook.after, context);
     }
-    return result;
+    _throwIfError(context);
+    return _result<R>(context);
   } catch (error, stackTrace) {
     context.error = error;
     context.stackTrace = stackTrace;
     if (annotation.onError) {
       await _runAsyncHooks(hooks, (hook) => hook.onError, context);
     }
-    rethrow;
+
+    if (!context.hasError) {
+      if (annotation.after) {
+        await _runAsyncHooks(hooks, (hook) => hook.after, context);
+      }
+      _throwIfError(context);
+      return _result<R>(context);
+    }
+
+    _throwIfError(context);
+    rethrow; // Unreachable but keeps analyzer happy.
   }
 }
 
@@ -84,19 +113,38 @@ R runSyncWithAop<R>({
     _runSyncHooks(hooks, (hook) => hook.before, context);
   }
 
+  if (context.skipInvocation) {
+    if (annotation.after) {
+      _runSyncHooks(hooks, (hook) => hook.after, context);
+    }
+    _throwIfError(context);
+    return _result<R>(context);
+  }
+
   try {
     final result = invoke();
     context.result = result;
     if (annotation.after) {
       _runSyncHooks(hooks, (hook) => hook.after, context);
     }
-    return result;
+    _throwIfError(context);
+    return _result<R>(context);
   } catch (error, stackTrace) {
     context.error = error;
     context.stackTrace = stackTrace;
     if (annotation.onError) {
       _runSyncHooks(hooks, (hook) => hook.onError, context);
     }
-    rethrow;
+
+    if (!context.hasError) {
+      if (annotation.after) {
+        _runSyncHooks(hooks, (hook) => hook.after, context);
+      }
+      _throwIfError(context);
+      return _result<R>(context);
+    }
+
+    _throwIfError(context);
+    rethrow; // Unreachable but keeps analyzer happy.
   }
 }
