@@ -12,6 +12,8 @@ Mark methods with `@Aop` and let `build_runner` generate proxy classes that run 
 - Simple `@Aop` annotation with `before`, `after`, `onError`, and `tag` options.
 - Generated `*.aop.dart` files expose proxy classes (e.g. `LoginServiceAopProxy`) you can drop in wherever the original class is used.
 - Runtime `AopHooks` and a global `AopRegistry` let you attach logging, tracing, guards, or analytics without touching the original implementation.
+- Advice `pointcut` expressions are generated into `registerWithPointcut(...)` so class/method pattern matching works out of the box.
+- Built-in `createObservationHooks(...)` emits structured before/after/error events for logging and performance tracking.
 - Works with both synchronous and asynchronous (`Future`) methods and reports invocation details through an `AopContext`.
 
 ## Getting started
@@ -88,6 +90,29 @@ AopRegistry.instance.register(
 
 Using tags keeps large projects organized—you decide which hook handles which annotated method.
 
+Pointcuts in `@Before/@After/@OnError/@Around` are now generated directly. Tag merge rule:
+
+- `effectiveTag = advice.tag ?? aspect.tag`
+- If `pointcut.tag` is omitted, `effectiveTag` is injected automatically.
+- If both exist and mismatch, code generation fails early with a clear error message.
+
+Need structured observability events without adding dependencies?
+
+```dart
+AopRegistry.instance.register(
+  createObservationHooks(
+    sink: (event) {
+      debugPrint(
+        '[${event.phase.name}] ${event.joinPointDescription} '
+        'elapsed=${event.elapsed.inMilliseconds}ms slow=${event.isSlow}',
+      );
+    },
+    slowCallThreshold: const Duration(milliseconds: 200),
+  ),
+  tag: 'auth',
+);
+```
+
 ## Example project
 
 The `example/` directory contains a tiny console-style demo that wires hooks into a `LoginService`, registers aspects via GetIt/injectable, and prints every lifecycle event.
@@ -111,6 +136,14 @@ final getIt = GetIt.instance;
 @InjectableInit()
 Future<void> configureDependencies() async {
   runFlutterAopBootstrap();
+  AopRegistry.instance.register(
+    createObservationHooks(
+      sink: (event) => debugPrint(
+        '[${event.phase.name}] ${event.joinPointDescription}',
+      ),
+    ),
+    tag: 'auth',
+  );
   getIt.init();
 }
 
@@ -140,7 +173,7 @@ Every class with at least one `@Aop` method receives a proxy and registers itsel
 - Hooks for synchronous methods must be synchronous too. If you need async work (e.g. writing to storage), mark the original method `async` so the proxy can await your hook.
 - `positionalArguments` and `namedArguments` inside `AopContext` give you the exact values passed to the method.
 - The optional `description` field is never used by the runtime but is emitted in generated comments—handy when you read the `.aop.dart` file.
-- You can short-circuit the original call by setting `context.skipInvocation = true` and populating `context.result` in a `before` hook (e.g. return a cached value). `OnError` hooks can also recover by clearing `context.error` and setting a replacement `context.result`.
+- You can short-circuit the original call with `context.skipWithResult(...)` in a `before` hook (e.g. return a cached value). `OnError` hooks can recover by clearing `context.error` and setting a replacement `context.result`.
 
 ## Running the generator
 
