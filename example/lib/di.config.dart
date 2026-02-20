@@ -10,7 +10,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:flutter_aop_example/di.dart' as _i674;
-import 'package:flutter_aop_example/login_service.dart' as _i217;
+import 'package:flutter_aop_example/scenarios/basic_auth/login_service.dart'
+    as _i759;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
@@ -22,7 +23,7 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final serviceModule = _$ServiceModule();
-    gh.lazySingleton<_i217.LoginService>(() => serviceModule.loginService());
+    gh.lazySingleton<_i759.LoginService>(() => serviceModule.loginService());
     return this;
   }
 }

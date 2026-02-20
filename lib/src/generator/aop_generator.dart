@@ -26,15 +26,15 @@ class AopGenerator extends Generator {
   static const TypeChecker _onErrorChecker = TypeChecker.fromUrl(
     '$_annotationLibrary#OnError',
   );
+  static const TypeChecker _aroundChecker = TypeChecker.fromUrl(
+    '$_annotationLibrary#Around',
+  );
   static const TypeChecker _contextChecker = TypeChecker.fromUrl(
     '$_contextLibrary#AopContext',
   );
 
   @override
-  FutureOr<String?> generate(
-    LibraryReader library,
-    BuildStep buildStep,
-  ) {
+  FutureOr<String?> generate(LibraryReader library, BuildStep buildStep) {
     final buffer = StringBuffer();
     final proxies = <_ProxyInfo>[];
     final aspects = <_AspectInfo>[];
@@ -42,13 +42,20 @@ class AopGenerator extends Generator {
     for (final classElement in library.classes) {
       if (_shouldSkipClass(classElement)) continue;
 
+      final annotatedMethods = classElement.methods
+          .where(
+            (method) =>
+                _aopChecker.hasAnnotationOf(method, throwOnUnresolved: false),
+          )
+          .toList();
+      for (final method in annotatedMethods) {
+        _validateAopTargetMethod(classElement, method);
+      }
+
       final methods = classElement.methods
           .where((method) => !method.isStatic && !method.isPrivate)
           .toList();
-      final hasAnnotatedMethod = methods.any(
-        (method) =>
-            _aopChecker.hasAnnotationOf(method, throwOnUnresolved: false),
-      );
+      final hasAnnotatedMethod = annotatedMethods.isNotEmpty;
 
       if (!hasAnnotatedMethod) continue;
 
@@ -98,6 +105,32 @@ class AopGenerator extends Generator {
         name == null ||
         name.isEmpty ||
         element.isPrivate;
+  }
+
+  void _validateAopTargetMethod(ClassElement owner, MethodElement method) {
+    final name = method.name ?? method.displayName;
+    if (method.isPrivate) {
+      throw InvalidGenerationSourceError(
+        'Invalid @Aop target on ${owner.displayName}.$name: private methods '
+        'cannot be proxied. Fix: make the method public or remove @Aop.',
+        element: method,
+      );
+    }
+    if (method.isStatic) {
+      throw InvalidGenerationSourceError(
+        'Invalid @Aop target on ${owner.displayName}.$name: static methods '
+        'cannot be proxied. Fix: move logic to an instance method or remove @Aop.',
+        element: method,
+      );
+    }
+    if (method.isOperator) {
+      throw InvalidGenerationSourceError(
+        'Invalid @Aop target on ${owner.displayName}.$name: operator methods '
+        'are not supported. Fix: wrap the behavior in a public instance method '
+        'and annotate that method instead.',
+        element: method,
+      );
+    }
   }
 
   String _generateProxyClass(
@@ -167,6 +200,8 @@ class AopGenerator extends Generator {
     final returnType = method.returnType.getDisplayString();
     final methodName = method.name ?? method.displayName;
     final descriptionName = method.displayName;
+    final methodTypeParameters = _methodTypeParameters(method);
+    final methodTypeArguments = _methodTypeArguments(method);
     final parameters = method.formalParameters;
     final signature = _parameterSignature(parameters);
     final callArguments = _methodArguments(parameters);
@@ -178,17 +213,20 @@ class AopGenerator extends Generator {
 
     final buffer = StringBuffer()
       ..writeln('  @override')
-      ..write('  $returnType $methodName($signature)');
+      ..write('  $returnType $methodName$methodTypeParameters($signature)');
 
     if (!hasAnnotation) {
-      buffer.writeln(' => _target.$methodName($callArguments);');
+      buffer.writeln(
+        ' => _target.$methodName$methodTypeArguments($callArguments);',
+      );
       return buffer.toString();
     }
 
     final isAsync = _returnsFuture(method.returnType);
     final dispatcher = isAsync ? 'runAsyncWithAop' : 'runSyncWithAop';
     final typeArg = _methodResultType(method.returnType);
-    final invocation = '_target.$methodName($callArguments)';
+    final invocation =
+        '_target.$methodName$methodTypeArguments($callArguments)';
 
     buffer
       ..writeln(' {')
@@ -231,7 +269,9 @@ class AopGenerator extends Generator {
     }
     if (element.isAbstract) {
       throw InvalidGenerationSourceError(
-        '@Aspect classes must be concrete: ${element.displayName}',
+        'Invalid @Aspect target on ${element.displayName}: abstract classes '
+        'cannot be instantiated for advice registration. Fix: remove the '
+        'abstract modifier or move advices to a concrete class.',
         element: element,
       );
     }
@@ -241,6 +281,7 @@ class AopGenerator extends Generator {
       throwOnUnresolved: false,
     );
     final defaultTag = annotation?.getField('tag')?.toStringValue();
+    final order = annotation?.getField('order')?.toIntValue() ?? 0;
 
     final constructor = element.unnamedConstructor;
     if (constructor != null) {
@@ -249,8 +290,10 @@ class AopGenerator extends Generator {
       );
       if (hasRequiredParam) {
         throw InvalidGenerationSourceError(
-          'Aspect ${element.displayName} must provide an unnamed constructor '
-          'without required parameters.',
+          'Invalid @Aspect constructor on ${element.displayName}: the unnamed '
+          'constructor has required parameters, so the generator cannot create '
+          'an instance. Fix: provide an unnamed constructor without required '
+          'parameters.',
           element: element,
         );
       }
@@ -272,12 +315,29 @@ class AopGenerator extends Generator {
           throwOnUnresolved: false,
         );
         if (data == null) return;
-        _validateAdviceSignature(element, method);
+
+        // Validate signature based on advice type
+        if (type == _AdviceType.around) {
+          _validateAroundAdviceSignature(element, method);
+        } else {
+          _validateAdviceSignature(element, method);
+        }
+
+        final explicitTag = data.getField('tag')?.toStringValue();
+        final effectiveTag = explicitTag ?? defaultTag;
+        final pointcut = _resolveAdvicePointcut(
+          aspect: element,
+          method: method,
+          annotation: data,
+          effectiveTag: effectiveTag,
+        );
+
         advices.add(
           _AdviceInfo(
             methodName: method.name ?? method.displayName,
             type: type,
-            tag: data.getField('tag')?.toStringValue() ?? defaultTag,
+            tag: effectiveTag,
+            pointcut: pointcut,
           ),
         );
       }
@@ -285,6 +345,7 @@ class AopGenerator extends Generator {
       addAdvice(_beforeChecker, _AdviceType.before);
       addAdvice(_afterChecker, _AdviceType.after);
       addAdvice(_onErrorChecker, _AdviceType.onError);
+      addAdvice(_aroundChecker, _AdviceType.around);
     }
 
     if (advices.isEmpty) {
@@ -295,14 +356,52 @@ class AopGenerator extends Generator {
       className: element.displayName,
       instantiation: instantiation,
       advices: advices,
+      order: order,
+    );
+  }
+
+  _PointcutInfo? _resolveAdvicePointcut({
+    required ClassElement aspect,
+    required MethodElement method,
+    required DartObject annotation,
+    required String? effectiveTag,
+  }) {
+    final pointcutData = annotation.getField('pointcut');
+    if (pointcutData == null || pointcutData.isNull) {
+      return null;
+    }
+
+    final classPattern = pointcutData.getField('classPattern')?.toStringValue();
+    final methodPattern = pointcutData
+        .getField('methodPattern')
+        ?.toStringValue();
+    final pointcutTag = pointcutData.getField('tag')?.toStringValue();
+
+    if (pointcutTag != null &&
+        effectiveTag != null &&
+        pointcutTag != effectiveTag) {
+      throw InvalidGenerationSourceError(
+        'Invalid advice configuration on ${aspect.displayName}.'
+        '${method.displayName}: advice tag ($effectiveTag) conflicts with '
+        'pointcut tag ($pointcutTag). Fix: make both tags match or remove one.',
+        element: method,
+      );
+    }
+
+    return _PointcutInfo(
+      classPattern: classPattern,
+      methodPattern: methodPattern,
+      tag: pointcutTag ?? effectiveTag,
     );
   }
 
   void _validateAdviceSignature(ClassElement aspect, MethodElement method) {
     if (method.formalParameters.length != 1) {
       throw InvalidGenerationSourceError(
-        'Advice method ${aspect.displayName}.${method.displayName} must accept '
-        'exactly one AopContext parameter.',
+        'Invalid advice signature on ${aspect.displayName}.'
+        '${method.displayName}: advice methods must accept exactly one '
+        'AopContext parameter. Fix: declare the method as '
+        '`void method(AopContext context)` (or FutureOr for @Around).',
         element: method,
       );
     }
@@ -310,8 +409,30 @@ class AopGenerator extends Generator {
     final parameter = method.formalParameters.first;
     if (!_contextChecker.isAssignableFromType(parameter.type)) {
       throw InvalidGenerationSourceError(
-        'Advice method ${aspect.displayName}.${method.displayName} must accept '
-        'AopContext as the only parameter.',
+        'Invalid advice signature on ${aspect.displayName}.'
+        '${method.displayName}: the single parameter must be AopContext. '
+        'Fix: change the parameter type to AopContext.',
+        element: method,
+      );
+    }
+  }
+
+  void _validateAroundAdviceSignature(
+    ClassElement aspect,
+    MethodElement method,
+  ) {
+    // First validate the parameter
+    _validateAdviceSignature(aspect, method);
+
+    // Around advice must return a value (not void)
+    // because it needs to return the result of proceed()
+    final returnType = method.returnType;
+    if (returnType is VoidType) {
+      throw InvalidGenerationSourceError(
+        'Invalid @Around signature on ${aspect.displayName}.'
+        '${method.displayName}: around advice must return a value so '
+        'proceed() can flow through. Fix: use FutureOr<dynamic> or a concrete '
+        'return type instead of void.',
         element: method,
       );
     }
@@ -357,17 +478,28 @@ class AopGenerator extends Generator {
         buffer.writeln('  final aspect$i = ${aspect.instantiation};');
         for (final advice in aspect.advices) {
           final hookField = _adviceField(advice.type);
+          final pointcutLiteral = advice.pointcut?.toLiteral();
+          if (pointcutLiteral != null) {
+            buffer.writeln('  hookRegistry.registerWithPointcut(');
+            buffer.writeln(
+              '    AopHooks($hookField: aspect$i.${advice.methodName}),',
+            );
+            buffer.writeln('    pointcut: $pointcutLiteral,');
+            buffer.writeln('    order: ${aspect.order},');
+            buffer.writeln('  );');
+            continue;
+          }
           final tagLiteral = advice.tag == null
               ? ''
               : 'tag: ${literalString(advice.tag!)}';
-          buffer
-            ..writeln('  hookRegistry.register(')
-            ..writeln(
-              '    AopHooks($hookField: aspect$i.${advice.methodName}),',
-            );
+          buffer.writeln('  hookRegistry.register(');
+          buffer.writeln(
+            '    AopHooks($hookField: aspect$i.${advice.methodName}),',
+          );
           if (tagLiteral.isNotEmpty) {
             buffer.writeln('    $tagLiteral,');
           }
+          buffer.writeln('    order: ${aspect.order},');
           buffer.writeln('  );');
         }
       }
@@ -397,6 +529,8 @@ class AopGenerator extends Generator {
         return 'after';
       case _AdviceType.onError:
         return 'onError';
+      case _AdviceType.around:
+        return 'around';
     }
   }
 
@@ -419,8 +553,24 @@ class AopGenerator extends Generator {
   }
 
   String _typeParameters(ClassElement element) {
-    if (element.typeParameters.isEmpty) return '';
-    final params = element.typeParameters
+    return _typeParametersForElements(element.typeParameters);
+  }
+
+  String _typeArguments(ClassElement element) {
+    return _typeArgumentsForElements(element.typeParameters);
+  }
+
+  String _methodTypeParameters(MethodElement method) {
+    return _typeParametersForElements(method.typeParameters);
+  }
+
+  String _methodTypeArguments(MethodElement method) {
+    return _typeArgumentsForElements(method.typeParameters);
+  }
+
+  String _typeParametersForElements(List<TypeParameterElement> parameters) {
+    if (parameters.isEmpty) return '';
+    final params = parameters
         .map((param) {
           final bound = param.bound == null
               ? ''
@@ -432,11 +582,9 @@ class AopGenerator extends Generator {
     return '<$params>';
   }
 
-  String _typeArguments(ClassElement element) {
-    if (element.typeParameters.isEmpty) return '';
-    final args = element.typeParameters
-        .map((param) => param.displayName)
-        .join(', ');
+  String _typeArgumentsForElements(List<TypeParameterElement> parameters) {
+    if (parameters.isEmpty) return '';
+    final args = parameters.map((param) => param.displayName).join(', ');
     return '<$args>';
   }
 
@@ -580,11 +728,13 @@ class _AspectInfo {
     required this.className,
     required this.instantiation,
     required this.advices,
+    required this.order,
   });
 
   final String className;
   final String instantiation;
   final List<_AdviceInfo> advices;
+  final int order;
 }
 
 class _AdviceInfo {
@@ -592,11 +742,38 @@ class _AdviceInfo {
     required this.methodName,
     required this.type,
     required this.tag,
+    required this.pointcut,
   });
 
   final String methodName;
   final _AdviceType type;
   final String? tag;
+  final _PointcutInfo? pointcut;
 }
 
-enum _AdviceType { before, after, onError }
+class _PointcutInfo {
+  const _PointcutInfo({this.classPattern, this.methodPattern, this.tag});
+
+  final String? classPattern;
+  final String? methodPattern;
+  final String? tag;
+
+  String toLiteral() {
+    final parts = <String>[];
+    if (classPattern != null) {
+      parts.add('classPattern: ${literalString(classPattern!)}');
+    }
+    if (methodPattern != null) {
+      parts.add('methodPattern: ${literalString(methodPattern!)}');
+    }
+    if (tag != null) {
+      parts.add('tag: ${literalString(tag!)}');
+    }
+    if (parts.isEmpty) {
+      return 'const Pointcut()';
+    }
+    return 'const Pointcut(${parts.join(', ')})';
+  }
+}
+
+enum _AdviceType { before, after, onError, around }

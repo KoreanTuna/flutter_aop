@@ -40,14 +40,41 @@ class LoginServiceAopProxy implements LoginService {
     );
   }
   // Proxy for: Future<void> login(String id, String password)
+
+  @override
+  Future<void> loginWithFailure(String id) {
+    const annotation = Aop(
+      before: true,
+      after: true,
+      onError: true,
+      tag: 'auth',
+      description: 'Failing authentication sample',
+    );
+    final context = AopContext(
+      target: _target,
+      className: 'LoginService',
+      methodName: 'loginWithFailure',
+      annotation: annotation,
+      positionalArguments: <dynamic>[id],
+      namedArguments: const <String, dynamic>{},
+    );
+    return runAsyncWithAop<void>(
+      context: context,
+      localHooks: _localHooks,
+      invoke: () => _target.loginWithFailure(id),
+    );
+  }
+  // Proxy for: Future<void> loginWithFailure(String id)
 }
 
-bool _$flutterAopInitialized_lib_login_service_dart = false;
-bool _$flutterAopEnsureInitialized_lib_login_service_dart() {
-  if (_$flutterAopInitialized_lib_login_service_dart) {
+bool _$flutterAopInitialized_lib_scenarios_basic_auth_login_service_dart =
+    false;
+bool
+_$flutterAopEnsureInitialized_lib_scenarios_basic_auth_login_service_dart() {
+  if (_$flutterAopInitialized_lib_scenarios_basic_auth_login_service_dart) {
     return true;
   }
-  _$flutterAopInitialized_lib_login_service_dart = true;
+  _$flutterAopInitialized_lib_scenarios_basic_auth_login_service_dart = true;
   final proxyRegistry = AopProxyRegistry.instance;
   proxyRegistry.register<LoginService>(
     (LoginService target, {AopHooks? hooks}) =>
@@ -57,10 +84,12 @@ bool _$flutterAopEnsureInitialized_lib_login_service_dart() {
 }
 
 @pragma('vm:entry-point', 'flutter_aop_bootstrap')
-final bool _$flutterAopBootstrap_lib_login_service_dart = AopBootstrapper
-    .instance
-    .register(_$flutterAopEnsureInitialized_lib_login_service_dart);
-void flutterAopBootstraplib_login_service_dart() {
+final bool _$flutterAopBootstrap_lib_scenarios_basic_auth_login_service_dart =
+    AopBootstrapper.instance.register(
+      _$flutterAopEnsureInitialized_lib_scenarios_basic_auth_login_service_dart,
+    );
+void flutterAopBootstraplib_scenarios_basic_auth_login_service_dart() {
   // ignore: unused_local_variable
-  final bool _ = _$flutterAopBootstrap_lib_login_service_dart;
+  final bool _ =
+      _$flutterAopBootstrap_lib_scenarios_basic_auth_login_service_dart;
 }

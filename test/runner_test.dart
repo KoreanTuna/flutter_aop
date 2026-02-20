@@ -83,40 +83,39 @@ void main() {
     );
   });
 
-  test('before hook can short-circuit invocation and after can override result',
-      () {
-    var invoked = false;
-    AopRegistry.instance.register(
-      AopHooks(
-        before: (context) {
-          context.result = 10;
-          context.skipInvocation = true;
+  test(
+    'before hook can short-circuit invocation and after can override result',
+    () {
+      var invoked = false;
+      AopRegistry.instance.register(
+        AopHooks(
+          before: (context) => context.skipWithResult(10),
+          after: (context) => context.result = (context.result as int) * 2,
+        ),
+      );
+
+      final context = AopContext(
+        target: Object(),
+        className: 'CachedService',
+        methodName: 'load',
+        annotation: const Aop(),
+        positionalArguments: const [],
+        namedArguments: const {},
+      );
+
+      final result = runSyncWithAop<int>(
+        context: context,
+        invoke: () {
+          invoked = true;
+          return 1;
         },
-        after: (context) => context.result = (context.result as int) * 2,
-      ),
-    );
+      );
 
-    final context = AopContext(
-      target: Object(),
-      className: 'CachedService',
-      methodName: 'load',
-      annotation: const Aop(),
-      positionalArguments: const [],
-      namedArguments: const {},
-    );
-
-    final result = runSyncWithAop<int>(
-      context: context,
-      invoke: () {
-        invoked = true;
-        return 1;
-      },
-    );
-
-    expect(invoked, isFalse);
-    expect(result, 20);
-    expect(context.result, 20);
-  });
+      expect(invoked, isFalse);
+      expect(result, 20);
+      expect(context.result, 20);
+    },
+  );
 
   test('onError hook can recover and still run after hooks', () async {
     final steps = <String>[];
