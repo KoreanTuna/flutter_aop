@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter_aop/flutter_aop.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,7 +11,7 @@ void main() {
       className: 'UserService',
       methodName: 'load',
       annotation: const Aop(tag: 'obs'),
-      positionalArguments: {"a": 1},
+      positionalArguments: LinkedHashMap()..["a"] = 1,
       namedArguments: const <String, dynamic>{'include': true},
     );
 
@@ -43,7 +45,7 @@ void main() {
         className: 'UserService',
         methodName: 'save',
         annotation: const Aop(tag: 'obs'),
-        positionalArguments: {"a": 7},
+        positionalArguments: LinkedHashMap()..["a"] = 7,
         namedArguments: const <String, dynamic>{},
       );
 
@@ -75,7 +77,9 @@ void main() {
       className: 'UserService',
       methodName: 'fetch',
       annotation: const Aop(tag: 'obs'),
-      positionalArguments: {"a": 1, "b": 2},
+      positionalArguments: LinkedHashMap()
+        ..["a"] = 1
+        ..["b"] = 2,
       namedArguments: const <String, dynamic>{'locale': 'ko'},
     );
 
@@ -88,7 +92,7 @@ void main() {
       ),
     );
 
-    expect(events.first.positionalArguments, [1, 2]);
+    expect(events.first.positionalArguments, {"a": 1, "b": 2});
     expect(events.first.namedArguments, {'locale': 'ko'});
   });
 
@@ -101,7 +105,7 @@ void main() {
         className: 'UserService',
         methodName: 'slowCall',
         annotation: const Aop(tag: 'obs'),
-        positionalArguments: const {},
+        positionalArguments: LinkedHashMap(),
         namedArguments: const <String, dynamic>{},
       );
 

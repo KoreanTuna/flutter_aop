@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:collection';
+
 import 'package:flutter_aop/flutter_aop.dart';
 
 part 'cache_service.aop.dart';

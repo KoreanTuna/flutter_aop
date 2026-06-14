@@ -30,7 +30,9 @@ class LoginServiceAopProxy implements LoginService {
       className: 'LoginService',
       methodName: 'login',
       annotation: annotation,
-      positionalArguments: {"id": id, "password": password},
+      positionalArguments: LinkedHashMap()
+        ..['id'] = id
+        ..['password'] = password,
       namedArguments: const <String, dynamic>{},
     );
     return runAsyncWithAop<void>(
@@ -55,7 +57,7 @@ class LoginServiceAopProxy implements LoginService {
       className: 'LoginService',
       methodName: 'loginWithFailure',
       annotation: annotation,
-      positionalArguments: {"id": id},
+      positionalArguments: LinkedHashMap()..['id'] = id,
       namedArguments: const <String, dynamic>{},
     );
     return runAsyncWithAop<void>(

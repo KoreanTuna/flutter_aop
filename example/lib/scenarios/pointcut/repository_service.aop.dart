@@ -29,7 +29,7 @@ class UserRepositoryAopProxy implements UserRepository {
       className: 'UserRepository',
       methodName: 'findUserById',
       annotation: annotation,
-      positionalArguments: {"id": id},
+      positionalArguments: LinkedHashMap()..['id'] = id,
       namedArguments: const <String, dynamic>{},
     );
     return runAsyncWithAop<String>(
@@ -53,7 +53,7 @@ class UserRepositoryAopProxy implements UserRepository {
       className: 'UserRepository',
       methodName: 'saveUser',
       annotation: annotation,
-      positionalArguments: {"name": name},
+      positionalArguments: LinkedHashMap()..['name'] = name,
       namedArguments: const <String, dynamic>{},
     );
     return runAsyncWithAop<void>(
@@ -85,7 +85,7 @@ class OrderRepositoryAopProxy implements OrderRepository {
       className: 'OrderRepository',
       methodName: 'findOrderById',
       annotation: annotation,
-      positionalArguments: {"id": id},
+      positionalArguments: LinkedHashMap()..['id'] = id,
       namedArguments: const <String, dynamic>{},
     );
     return runAsyncWithAop<String>(

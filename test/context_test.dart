@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter_aop/flutter_aop.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -11,7 +13,10 @@ void main() {
         className: 'TestService',
         methodName: 'testMethod',
         annotation: const Aop(tag: 'test'),
-        positionalArguments: <String, dynamic>{"a": 1, "b": 'hello', "c": true},
+        positionalArguments: LinkedHashMap()
+        ..["a"] = 1
+        ..["b"] = "hello"
+        ..["c"] = true,
         namedArguments: <String, dynamic>{'name': 'John', 'age': 30},
       );
     });
@@ -26,7 +31,7 @@ void main() {
         className: 'TestService',
         methodName: 'nextMethod',
         annotation: const Aop(tag: 'test'),
-        positionalArguments: const {},
+        positionalArguments: LinkedHashMap(),
         namedArguments: const <String, dynamic>{},
       );
 
@@ -41,9 +46,9 @@ void main() {
     });
 
     test('getArg returns positional argument with correct type', () {
-      expect(context.getArg<int>(0), 1);
-      expect(context.getArg<String>(1), 'hello');
-      expect(context.getArg<bool>(2), true);
+      expect(context.getArgByIndex<int>(0), 1);
+      expect(context.getArgByIndex<String>(1), 'hello');
+      expect(context.getArgByIndex<bool>(2), true);
     });
 
     test('getNamedArg returns named argument with correct type', () {

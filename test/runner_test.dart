@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter_aop/flutter_aop.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -18,7 +20,9 @@ void main() {
       className: 'Sample',
       methodName: 'calculate',
       annotation: const Aop(),
-      positionalArguments: {"a": 1, "b": 2},
+      positionalArguments: LinkedHashMap()
+        ..["a"] = 1
+        ..["b"] = 2,
       namedArguments: const <String, dynamic>{},
     );
 
@@ -44,7 +48,7 @@ void main() {
       className: 'Repository',
       methodName: 'load',
       annotation: const Aop(onError: true, after: false),
-      positionalArguments: const {},
+      positionalArguments: LinkedHashMap(),
       namedArguments: const {},
     );
 
@@ -69,7 +73,7 @@ void main() {
       className: 'Target',
       methodName: 'syncCall',
       annotation: const Aop(),
-      positionalArguments: const {},
+      positionalArguments: LinkedHashMap(),
       namedArguments: const {},
     );
 
@@ -99,7 +103,7 @@ void main() {
         className: 'CachedService',
         methodName: 'load',
         annotation: const Aop(),
-        positionalArguments: const {},
+        positionalArguments: LinkedHashMap(),
         namedArguments: const {},
       );
 
@@ -135,7 +139,7 @@ void main() {
       className: 'Repo',
       methodName: 'fetch',
       annotation: const Aop(),
-      positionalArguments: const {},
+      positionalArguments: LinkedHashMap(),
       namedArguments: const {},
     );
 

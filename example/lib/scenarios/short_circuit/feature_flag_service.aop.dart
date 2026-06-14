@@ -30,7 +30,7 @@ class FeatureFlagServiceAopProxy implements FeatureFlagService {
       className: 'FeatureFlagService',
       methodName: 'checkoutRoute',
       annotation: annotation,
-      positionalArguments: const {},
+      positionalArguments: LinkedHashMap(),
       namedArguments: const <String, dynamic>{},
     );
     return runSyncWithAop<String>(

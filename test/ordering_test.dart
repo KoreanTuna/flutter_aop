@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter_aop/flutter_aop.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -29,7 +31,7 @@ void main() {
         className: 'Service',
         methodName: 'test',
         annotation: const Aop(),
-        positionalArguments: const {},
+        positionalArguments: LinkedHashMap(),
         namedArguments: const {},
       );
 
@@ -61,7 +63,7 @@ void main() {
         className: 'Service',
         methodName: 'test',
         annotation: const Aop(),
-        positionalArguments: const {},
+        positionalArguments: LinkedHashMap(),
         namedArguments: const {},
       );
 
@@ -97,7 +99,7 @@ void main() {
         className: 'Service',
         methodName: 'test',
         annotation: const Aop(tag: 'test'),
-        positionalArguments: const {},
+        positionalArguments: LinkedHashMap(),
         namedArguments: const {},
       );
 
@@ -127,7 +129,7 @@ void main() {
           className: 'Service',
           methodName: 'test',
           annotation: const Aop(tag: 'test'),
-          positionalArguments: const {},
+          positionalArguments: LinkedHashMap(),
           namedArguments: const {},
         );
 
@@ -169,7 +171,7 @@ void main() {
         className: 'Service',
         methodName: 'test',
         annotation: const Aop(),
-        positionalArguments: const {},
+        positionalArguments: LinkedHashMap(),
         namedArguments: const {},
       );
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'annotation.dart';
 
@@ -87,7 +88,7 @@ class AopContext {
   final Aop annotation;
 
   /// Positional arguments passed to the method.
-  final Map<String, dynamic> positionalArguments;
+  final LinkedHashMap<String, dynamic> positionalArguments;
 
   /// Named arguments passed to the method.
   final Map<String, dynamic> namedArguments;
@@ -261,7 +262,39 @@ class AopContext {
   ///
   /// Throws [RangeError] if index is out of bounds.
   /// Throws [TypeError] if the argument is not of type [T].
-  T getArg<T>(int index) => positionalArguments[index] as T;
+  T getArgByIndex<T>(int index) =>
+      positionalArguments.values.elementAt(index) as T;
+
+  /// Gets a positional argument by index with type casting,
+  /// or returns [defaultValue] if value is null.
+  ///
+  /// NOTE: it will return [defaultValue] if value is null regardless the existence,
+  /// which means it will return [defaultValue] if value is null
+  /// but the parameter is exist and allow nullable value
+  ///
+  /// Throws [RangeError] if index is out of bounds.
+  /// Throws [TypeError] if the argument is not of type [T].
+  T getArgByIndexOr<T>(int index, T defaultValue) {
+    final value = positionalArguments.values.elementAtOrNull(index);
+    if (value == null) {
+      return defaultValue;
+    }
+    return value as T;
+  }
+
+  /// Gets a positional argument by name with type casting.
+  ///
+  /// Throws [RangeError] if index is out of bounds.
+  /// Throws [TypeError] if the argument is not of type [T].
+  T getArgByName<T>(String name) => positionalArguments[name] as T;
+
+  T getArgByNameOr<T>(String name, T defaultValue) {
+    final value = positionalArguments[name];
+    if (value == null && !positionalArguments.containsKey(name)) {
+      return defaultValue;
+    }
+    return value as T;
+  }
 
   /// Gets a named argument with type casting.
   ///

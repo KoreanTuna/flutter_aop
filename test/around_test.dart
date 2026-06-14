@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter_aop/flutter_aop.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -24,7 +26,7 @@ void main() {
         className: 'Service',
         methodName: 'getData',
         annotation: const Aop(),
-        positionalArguments: const {},
+        positionalArguments: LinkedHashMap(),
         namedArguments: const {},
       );
 
@@ -56,7 +58,7 @@ void main() {
         className: 'Service',
         methodName: 'calculate',
         annotation: const Aop(),
-        positionalArguments: const {},
+        positionalArguments: LinkedHashMap(),
         namedArguments: const {},
       );
 
@@ -85,7 +87,7 @@ void main() {
         className: 'Service',
         methodName: 'fetch',
         annotation: const Aop(),
-        positionalArguments: const {},
+        positionalArguments: LinkedHashMap(),
         namedArguments: const {},
       );
 
@@ -133,7 +135,7 @@ void main() {
         className: 'Service',
         methodName: 'process',
         annotation: const Aop(),
-        positionalArguments: const {},
+        positionalArguments: LinkedHashMap(),
         namedArguments: const {},
       );
 
@@ -172,7 +174,7 @@ void main() {
         className: 'Service',
         methodName: 'run',
         annotation: const Aop(),
-        positionalArguments: const {},
+        positionalArguments: LinkedHashMap(),
         namedArguments: const {},
       );
 
@@ -210,7 +212,7 @@ void main() {
         className: 'Service',
         methodName: 'syncMethod',
         annotation: const Aop(),
-        positionalArguments: const {},
+        positionalArguments: LinkedHashMap(),
         namedArguments: const {},
       );
 
@@ -240,7 +242,7 @@ void main() {
         className: 'Service',
         methodName: 'syncMethod',
         annotation: const Aop(),
-        positionalArguments: const {},
+        positionalArguments: LinkedHashMap(),
         namedArguments: const {},
       );
 
