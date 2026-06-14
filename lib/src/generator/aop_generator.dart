@@ -644,14 +644,16 @@ class AopGenerator extends Generator {
   }
 
   String _positionalArgumentsLiteral(List<FormalParameterElement> parameters) {
-    final positional = parameters
-        .where((param) => param.isPositional)
-        .map((param) => param.displayName)
-        .join(', ');
+    final positional = parameters.where((param) => param.isPositional);
     if (positional.isEmpty) {
-      return 'const <dynamic>[]';
+      return 'LinkedHashMap()';
     }
-    return '<dynamic>[$positional]';
+    final entries = positional.map((param) {
+      final name = param.name ?? param.displayName;
+      final value = param.displayName;
+      return "..['$name'] = $value";
+    }).join();
+    return 'LinkedHashMap()$entries';
   }
 
   String _namedArgumentsLiteral(List<FormalParameterElement> parameters) {

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter_aop/flutter_aop.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -7,24 +9,15 @@ void main() {
       const pointcut = Pointcut(classPattern: '*Service');
 
       expect(
-        pointcut.matches(
-          className: 'UserService',
-          methodName: 'test',
-        ),
+        pointcut.matches(className: 'UserService', methodName: 'test'),
         isTrue,
       );
       expect(
-        pointcut.matches(
-          className: 'LoginService',
-          methodName: 'test',
-        ),
+        pointcut.matches(className: 'LoginService', methodName: 'test'),
         isTrue,
       );
       expect(
-        pointcut.matches(
-          className: 'UserRepository',
-          methodName: 'test',
-        ),
+        pointcut.matches(className: 'UserRepository', methodName: 'test'),
         isFalse,
       );
     });
@@ -33,24 +26,15 @@ void main() {
       const pointcut = Pointcut(classPattern: 'User*');
 
       expect(
-        pointcut.matches(
-          className: 'UserService',
-          methodName: 'test',
-        ),
+        pointcut.matches(className: 'UserService', methodName: 'test'),
         isTrue,
       );
       expect(
-        pointcut.matches(
-          className: 'UserRepository',
-          methodName: 'test',
-        ),
+        pointcut.matches(className: 'UserRepository', methodName: 'test'),
         isTrue,
       );
       expect(
-        pointcut.matches(
-          className: 'LoginService',
-          methodName: 'test',
-        ),
+        pointcut.matches(className: 'LoginService', methodName: 'test'),
         isFalse,
       );
     });
@@ -59,24 +43,15 @@ void main() {
       const pointcut = Pointcut(methodPattern: 'get*');
 
       expect(
-        pointcut.matches(
-          className: 'Service',
-          methodName: 'getUser',
-        ),
+        pointcut.matches(className: 'Service', methodName: 'getUser'),
         isTrue,
       );
       expect(
-        pointcut.matches(
-          className: 'Service',
-          methodName: 'getUserById',
-        ),
+        pointcut.matches(className: 'Service', methodName: 'getUserById'),
         isTrue,
       );
       expect(
-        pointcut.matches(
-          className: 'Service',
-          methodName: 'fetchUser',
-        ),
+        pointcut.matches(className: 'Service', methodName: 'fetchUser'),
         isFalse,
       );
     });
@@ -85,24 +60,15 @@ void main() {
       const pointcut = Pointcut(methodPattern: 'get?ser');
 
       expect(
-        pointcut.matches(
-          className: 'Service',
-          methodName: 'getUser',
-        ),
+        pointcut.matches(className: 'Service', methodName: 'getUser'),
         isTrue,
       );
       expect(
-        pointcut.matches(
-          className: 'Service',
-          methodName: 'getAser',
-        ),
+        pointcut.matches(className: 'Service', methodName: 'getAser'),
         isTrue,
       );
       expect(
-        pointcut.matches(
-          className: 'Service',
-          methodName: 'getAllUser',
-        ),
+        pointcut.matches(className: 'Service', methodName: 'getAllUser'),
         isFalse,
       );
     });
@@ -114,24 +80,15 @@ void main() {
       );
 
       expect(
-        pointcut.matches(
-          className: 'UserRepository',
-          methodName: 'findById',
-        ),
+        pointcut.matches(className: 'UserRepository', methodName: 'findById'),
         isTrue,
       );
       expect(
-        pointcut.matches(
-          className: 'UserRepository',
-          methodName: 'save',
-        ),
+        pointcut.matches(className: 'UserRepository', methodName: 'save'),
         isFalse,
       );
       expect(
-        pointcut.matches(
-          className: 'UserService',
-          methodName: 'findById',
-        ),
+        pointcut.matches(className: 'UserService', methodName: 'findById'),
         isFalse,
       );
     });
@@ -197,9 +154,7 @@ void main() {
       final calls = <String>[];
 
       AopRegistry.instance.registerWithPointcut(
-        AopHooks(
-          before: (ctx) => calls.add('pointcut-before'),
-        ),
+        AopHooks(before: (ctx) => calls.add('pointcut-before')),
         pointcut: const Pointcut(classPattern: '*Service'),
       );
 
@@ -208,7 +163,7 @@ void main() {
         className: 'UserService',
         methodName: 'test',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: LinkedHashMap(),
         namedArguments: const {},
       );
 
@@ -224,9 +179,7 @@ void main() {
       final calls = <String>[];
 
       AopRegistry.instance.registerWithPointcut(
-        AopHooks(
-          before: (ctx) => calls.add('pointcut-before'),
-        ),
+        AopHooks(before: (ctx) => calls.add('pointcut-before')),
         pointcut: const Pointcut(classPattern: '*Service'),
       );
 
@@ -235,7 +188,7 @@ void main() {
         className: 'UserRepository',
         methodName: 'test',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: LinkedHashMap(),
         namedArguments: const {},
       );
 

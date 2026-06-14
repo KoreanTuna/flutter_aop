@@ -30,7 +30,7 @@ class PipelineServiceAopProxy implements PipelineService {
       className: 'PipelineService',
       methodName: 'process',
       annotation: annotation,
-      positionalArguments: <dynamic>[payload],
+      positionalArguments: LinkedHashMap()..['payload'] = payload,
       namedArguments: const <String, dynamic>{},
     );
     return runAsyncWithAop<String>(

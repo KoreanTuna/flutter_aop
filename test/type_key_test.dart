@@ -56,13 +56,13 @@ void main() {
     test('registerGeneric and wrapGeneric work correctly', () {
       var proxyCalled = false;
 
-      AopProxyRegistry.instance.registerGeneric<Repository<User>>(
-        (target, {hooks}) {
-          proxyCalled = true;
-          return target;
-        },
-        typeKey: TypeKey.withArgs(Repository, [User]),
-      );
+      AopProxyRegistry.instance.registerGeneric<Repository<User>>((
+        target, {
+        hooks,
+      }) {
+        proxyCalled = true;
+        return target;
+      }, typeKey: TypeKey.withArgs(Repository, [User]));
 
       final repo = Repository<User>();
       final wrapped = aopWrapGeneric(
@@ -78,26 +78,23 @@ void main() {
       var userFactoryCalled = false;
       var productFactoryCalled = false;
 
-      AopProxyRegistry.instance.registerGeneric<Repository<User>>(
-        (target, {hooks}) {
-          userFactoryCalled = true;
-          return target;
-        },
-        typeKey: TypeKey.withArgs(Repository, [User]),
-      );
+      AopProxyRegistry.instance.registerGeneric<Repository<User>>((
+        target, {
+        hooks,
+      }) {
+        userFactoryCalled = true;
+        return target;
+      }, typeKey: TypeKey.withArgs(Repository, [User]));
 
-      AopProxyRegistry.instance.registerGeneric<Repository<Product>>(
-        (target, {hooks}) {
-          productFactoryCalled = true;
-          return target;
-        },
-        typeKey: TypeKey.withArgs(Repository, [Product]),
-      );
+      AopProxyRegistry.instance.registerGeneric<Repository<Product>>((
+        target, {
+        hooks,
+      }) {
+        productFactoryCalled = true;
+        return target;
+      }, typeKey: TypeKey.withArgs(Repository, [Product]));
 
-      aopWrapGeneric(
-        Repository<User>(),
-        TypeKey.withArgs(Repository, [User]),
-      );
+      aopWrapGeneric(Repository<User>(), TypeKey.withArgs(Repository, [User]));
 
       expect(userFactoryCalled, isTrue);
       expect(productFactoryCalled, isFalse);

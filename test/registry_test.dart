@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter_aop/flutter_aop.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -25,7 +27,7 @@ void main() {
       className: 'CheckoutService',
       methodName: 'placeOrder',
       annotation: const Aop(tag: 'checkout'),
-      positionalArguments: const [],
+      positionalArguments: LinkedHashMap(),
       namedArguments: const {},
     );
 

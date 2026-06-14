@@ -37,7 +37,7 @@ class AopObservationEvent {
   final DateTime timestamp;
   final Duration elapsed;
   final bool isSlow;
-  final List<dynamic>? positionalArguments;
+  final Map<String, dynamic>? positionalArguments;
   final Map<String, dynamic>? namedArguments;
   final dynamic result;
   final Object? error;
@@ -69,7 +69,7 @@ AopHooks createObservationHooks({
     final isSlow = slowCallThreshold != null && elapsed >= slowCallThreshold;
 
     final positional = includeArguments
-        ? List<dynamic>.unmodifiable(context.positionalArguments)
+        ? Map<String, dynamic>.unmodifiable(context.positionalArguments)
         : null;
     final named = includeArguments
         ? Map<String, dynamic>.unmodifiable(context.namedArguments)
