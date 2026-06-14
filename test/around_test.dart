@@ -245,10 +245,7 @@ void main() {
       );
 
       expect(
-        () => runSyncWithAop<int>(
-          context: context,
-          invoke: () => 42,
-        ),
+        () => runSyncWithAop<int>(context: context, invoke: () => 42),
         throwsStateError,
       );
     });

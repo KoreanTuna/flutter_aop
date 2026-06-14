@@ -39,6 +39,7 @@ class GeneratorPointcutServiceAopProxy implements GeneratorPointcutService {
       invoke: () => _target.findById(id),
     );
   }
+
   // Proxy for: String findById(String id)
 
   @override
@@ -63,6 +64,7 @@ class GeneratorPointcutServiceAopProxy implements GeneratorPointcutService {
       invoke: () => _target.findOther(id),
     );
   }
+
   // Proxy for: String findOther(String id)
 }
 
@@ -95,10 +97,12 @@ class GeneratorGenericServiceAopProxy implements GeneratorGenericService {
       invoke: () => _target.echo<T>(value),
     );
   }
+
   // Proxy for: T echo(T value)
 }
 
 bool _$flutterAopInitialized_test_generator_fixture_dart = false;
+
 bool _$flutterAopEnsureInitialized_test_generator_fixture_dart() {
   if (_$flutterAopInitialized_test_generator_fixture_dart) {
     return true;
@@ -137,6 +141,7 @@ bool _$flutterAopEnsureInitialized_test_generator_fixture_dart() {
 final bool _$flutterAopBootstrap_test_generator_fixture_dart = AopBootstrapper
     .instance
     .register(_$flutterAopEnsureInitialized_test_generator_fixture_dart);
+
 void flutterAopBootstraptest_generator_fixture_dart() {
   // ignore: unused_local_variable
   final bool _ = _$flutterAopBootstrap_test_generator_fixture_dart;
