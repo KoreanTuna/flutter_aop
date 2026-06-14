@@ -24,7 +24,7 @@ void main() {
         className: 'Service',
         methodName: 'getData',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: const {},
         namedArguments: const {},
       );
 
@@ -56,7 +56,7 @@ void main() {
         className: 'Service',
         methodName: 'calculate',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: const {},
         namedArguments: const {},
       );
 
@@ -85,7 +85,7 @@ void main() {
         className: 'Service',
         methodName: 'fetch',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: const {},
         namedArguments: const {},
       );
 
@@ -133,7 +133,7 @@ void main() {
         className: 'Service',
         methodName: 'process',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: const {},
         namedArguments: const {},
       );
 
@@ -172,7 +172,7 @@ void main() {
         className: 'Service',
         methodName: 'run',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: const {},
         namedArguments: const {},
       );
 
@@ -210,7 +210,7 @@ void main() {
         className: 'Service',
         methodName: 'syncMethod',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: const {},
         namedArguments: const {},
       );
 
@@ -240,7 +240,7 @@ void main() {
         className: 'Service',
         methodName: 'syncMethod',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: const {},
         namedArguments: const {},
       );
 

@@ -30,7 +30,7 @@ class GeneratorPointcutServiceAopProxy implements GeneratorPointcutService {
       className: 'GeneratorPointcutService',
       methodName: 'findById',
       annotation: annotation,
-      positionalArguments: <dynamic>[id],
+      positionalArguments: {"id": id},
       namedArguments: const <String, dynamic>{},
     );
     return runSyncWithAop<String>(
@@ -54,7 +54,7 @@ class GeneratorPointcutServiceAopProxy implements GeneratorPointcutService {
       className: 'GeneratorPointcutService',
       methodName: 'findOther',
       annotation: annotation,
-      positionalArguments: <dynamic>[id],
+      positionalArguments: {"id": id},
       namedArguments: const <String, dynamic>{},
     );
     return runSyncWithAop<String>(
@@ -86,7 +86,7 @@ class GeneratorGenericServiceAopProxy implements GeneratorGenericService {
       className: 'GeneratorGenericService',
       methodName: 'echo',
       annotation: annotation,
-      positionalArguments: <dynamic>[value],
+      positionalArguments: {"value": value},
       namedArguments: const <String, dynamic>{},
     );
     return runSyncWithAop<T>(

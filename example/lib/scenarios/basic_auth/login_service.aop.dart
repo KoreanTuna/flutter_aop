@@ -30,7 +30,7 @@ class LoginServiceAopProxy implements LoginService {
       className: 'LoginService',
       methodName: 'login',
       annotation: annotation,
-      positionalArguments: <dynamic>[id, password],
+      positionalArguments: {"id": id, "password": password},
       namedArguments: const <String, dynamic>{},
     );
     return runAsyncWithAop<void>(
@@ -55,7 +55,7 @@ class LoginServiceAopProxy implements LoginService {
       className: 'LoginService',
       methodName: 'loginWithFailure',
       annotation: annotation,
-      positionalArguments: <dynamic>[id],
+      positionalArguments: {"id": id},
       namedArguments: const <String, dynamic>{},
     );
     return runAsyncWithAop<void>(

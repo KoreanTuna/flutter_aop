@@ -18,7 +18,7 @@ void main() {
       className: 'Sample',
       methodName: 'calculate',
       annotation: const Aop(),
-      positionalArguments: const <dynamic>[1, 2],
+      positionalArguments: {"a": 1, "b": 2},
       namedArguments: const <String, dynamic>{},
     );
 
@@ -44,7 +44,7 @@ void main() {
       className: 'Repository',
       methodName: 'load',
       annotation: const Aop(onError: true, after: false),
-      positionalArguments: const [],
+      positionalArguments: const {},
       namedArguments: const {},
     );
 
@@ -69,7 +69,7 @@ void main() {
       className: 'Target',
       methodName: 'syncCall',
       annotation: const Aop(),
-      positionalArguments: const [],
+      positionalArguments: const {},
       namedArguments: const {},
     );
 
@@ -99,7 +99,7 @@ void main() {
         className: 'CachedService',
         methodName: 'load',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: const {},
         namedArguments: const {},
       );
 
@@ -135,7 +135,7 @@ void main() {
       className: 'Repo',
       methodName: 'fetch',
       annotation: const Aop(),
-      positionalArguments: const [],
+      positionalArguments: const {},
       namedArguments: const {},
     );
 

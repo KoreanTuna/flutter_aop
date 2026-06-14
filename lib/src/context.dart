@@ -87,7 +87,7 @@ class AopContext {
   final Aop annotation;
 
   /// Positional arguments passed to the method.
-  final List<dynamic> positionalArguments;
+  final Map<String, dynamic> positionalArguments;
 
   /// Named arguments passed to the method.
   final Map<String, dynamic> namedArguments;

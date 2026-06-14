@@ -29,7 +29,7 @@ class PaymentServiceAopProxy implements PaymentService {
       className: 'PaymentService',
       methodName: 'charge',
       annotation: annotation,
-      positionalArguments: <dynamic>[userId],
+      positionalArguments: {"userId": userId},
       namedArguments: const <String, dynamic>{},
     );
     return runAsyncWithAop<String>(

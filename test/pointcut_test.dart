@@ -208,7 +208,7 @@ void main() {
         className: 'UserService',
         methodName: 'test',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: const {},
         namedArguments: const {},
       );
 
@@ -235,7 +235,7 @@ void main() {
         className: 'UserRepository',
         methodName: 'test',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: const {},
         namedArguments: const {},
       );
 

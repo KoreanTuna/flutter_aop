@@ -25,7 +25,7 @@ void main() {
       className: 'CheckoutService',
       methodName: 'placeOrder',
       annotation: const Aop(tag: 'checkout'),
-      positionalArguments: const [],
+      positionalArguments: const {},
       namedArguments: const {},
     );
 

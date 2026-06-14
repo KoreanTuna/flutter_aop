@@ -36,7 +36,7 @@ class CatalogServiceAopProxy implements CatalogService {
       className: 'CatalogService',
       methodName: 'loadProducts',
       annotation: annotation,
-      positionalArguments: <dynamic>[category],
+      positionalArguments: {"category": category},
       namedArguments: const <String, dynamic>{},
     );
     return runAsyncWithAop<List<String>>(

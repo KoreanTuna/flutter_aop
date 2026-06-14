@@ -27,7 +27,7 @@ class CacheAspect {
   /// 히트 시 캐시 데이터를 반환하고, 아니면 실행 후 결과를 저장합니다.
   @Around()
   Future<dynamic> cache(AopContext ctx) async {
-    final key = '${ctx.methodName}:${ctx.positionalArguments.join('|')}';
+    final key = '${ctx.methodName}:${ctx.positionalArguments.values.join('|')}';
     if (_cache.containsKey(key)) {
       print('[Aspect][Cache] HIT key=$key');
       return _cache[key];

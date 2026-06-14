@@ -9,7 +9,7 @@ void main() {
       className: 'UserService',
       methodName: 'load',
       annotation: const Aop(tag: 'obs'),
-      positionalArguments: const <dynamic>[1],
+      positionalArguments: { "a": 1 },
       namedArguments: const <String, dynamic>{'include': true},
     );
 
@@ -43,7 +43,7 @@ void main() {
         className: 'UserService',
         methodName: 'save',
         annotation: const Aop(tag: 'obs'),
-        positionalArguments: const <dynamic>[7],
+        positionalArguments: {"a" : 7},
         namedArguments: const <String, dynamic>{},
       );
 
@@ -75,7 +75,7 @@ void main() {
       className: 'UserService',
       methodName: 'fetch',
       annotation: const Aop(tag: 'obs'),
-      positionalArguments: const <dynamic>[1, 2],
+      positionalArguments: { "a": 1, "b": 2 },
       namedArguments: const <String, dynamic>{'locale': 'ko'},
     );
 
@@ -101,7 +101,7 @@ void main() {
         className: 'UserService',
         methodName: 'slowCall',
         annotation: const Aop(tag: 'obs'),
-        positionalArguments: const <dynamic>[],
+        positionalArguments: const {},
         namedArguments: const <String, dynamic>{},
       );
 

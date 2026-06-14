@@ -11,7 +11,7 @@ void main() {
         className: 'TestService',
         methodName: 'testMethod',
         annotation: const Aop(tag: 'test'),
-        positionalArguments: <dynamic>[1, 'hello', true],
+        positionalArguments: <String, dynamic>{"a": 1, "b": 'hello', "c": true},
         namedArguments: <String, dynamic>{'name': 'John', 'age': 30},
       );
     });
@@ -26,7 +26,7 @@ void main() {
         className: 'TestService',
         methodName: 'nextMethod',
         annotation: const Aop(tag: 'test'),
-        positionalArguments: const <dynamic>[],
+        positionalArguments: const {},
         namedArguments: const <String, dynamic>{},
       );
 

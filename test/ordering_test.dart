@@ -29,7 +29,7 @@ void main() {
         className: 'Service',
         methodName: 'test',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: const {},
         namedArguments: const {},
       );
 
@@ -61,7 +61,7 @@ void main() {
         className: 'Service',
         methodName: 'test',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: const {},
         namedArguments: const {},
       );
 
@@ -97,7 +97,7 @@ void main() {
         className: 'Service',
         methodName: 'test',
         annotation: const Aop(tag: 'test'),
-        positionalArguments: const [],
+        positionalArguments: const {},
         namedArguments: const {},
       );
 
@@ -127,7 +127,7 @@ void main() {
           className: 'Service',
           methodName: 'test',
           annotation: const Aop(tag: 'test'),
-          positionalArguments: const [],
+          positionalArguments: const {},
           namedArguments: const {},
         );
 
@@ -169,7 +169,7 @@ void main() {
         className: 'Service',
         methodName: 'test',
         annotation: const Aop(),
-        positionalArguments: const [],
+        positionalArguments: const {},
         namedArguments: const {},
       );
 
